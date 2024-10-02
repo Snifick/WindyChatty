@@ -1,6 +1,5 @@
 package com.flowtrust.windychatty.ui.pages.auth
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,20 +13,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -47,27 +37,36 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.ComponentRegistry
-import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
-import coil.request.CachePolicy
 import coil.request.ImageRequest
-import com.flowtrust.windychatty.R
 import com.flowtrust.windychatty.ui.pages.auth.contry_picker.CountryCodePicker
 import com.flowtrust.windychatty.ui.pages.auth.contry_picker.PhoneVisualTransformation
-import com.flowtrust.windychatty.ui.theme.black
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
-fun AuthPage(viewModel: AuthViewModel = hiltViewModel()) {
+fun AuthPage(viewModel: AuthViewModel = hiltViewModel(),
+             onNavigateToCode:()->Unit,
+             skipAuth:()->Unit) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit){
+        withContext(Dispatchers.IO){
+            if(viewModel.skipAuth()){
+                withContext(Dispatchers.Main){
+                    skipAuth()
+                }
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -106,7 +105,7 @@ fun AuthPage(viewModel: AuthViewModel = hiltViewModel()) {
                     contentDescription = "Флаг",
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier
-                        .size(42.dp,28.dp)
+                        .size(42.dp, 28.dp)
                         .clip(RoundedCornerShape(4.dp))
                         .clickable {
                             expanded = true
@@ -211,41 +210,16 @@ fun AuthPage(viewModel: AuthViewModel = hiltViewModel()) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Submit phone button
         Button(
-            onClick = { viewModel.submitPhone() },
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            onClick = { viewModel.submitPhone(onSuccess = {onNavigateToCode.invoke()}) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             enabled = !uiState.isLoading
         ) {
             Text("Отправить код", style = MaterialTheme.typography.bodyMedium)
         }
 
-
-
-        if (uiState.isCodeSent) {
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                value = uiState.code,
-                onValueChange = { viewModel.onCodeChanged(it) },
-                label = { Text("Подтверждение кода") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier
-                    .fillMaxWidth()
-
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = { viewModel.submitCode() },
-                modifier = Modifier.fillMaxWidth(),
-
-                enabled = !uiState.isLoading
-            ) {
-                Text("Подтвердить код")
-            }
-        }
 
         if (uiState.errorMessage.isNotEmpty()) {
             Spacer(modifier = Modifier.height(16.dp))

@@ -12,6 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.flowtrust.windychatty.ui.AppNavGraph
 import com.flowtrust.windychatty.ui.pages.auth.AuthPage
 import com.flowtrust.windychatty.ui.theme.WindyChattyTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,11 +27,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             WindyChattyTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding)){
-                        AuthPage()
-                    }
-
-
+                    val navController = rememberNavController()
+                    AppNavGraph(modifier = Modifier.padding(innerPadding),
+                        navController = navController)
                 }
             }
         }

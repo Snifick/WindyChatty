@@ -67,6 +67,7 @@ dependencies {
 
     implementation(libs.libphonenumber)
 
+    implementation (libs.gson)
 
     implementation(libs.jwtdecode)
     implementation(libs.retrofit2)

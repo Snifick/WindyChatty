@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">WindyChatty</string>
+    <string name="enter_sms_code">Введите код из СМС</string>
+    <string name="on_number">На номер</string>
+    <string name="was_send_sms_code">был отправлен код подтверждения</string>
 </resources>

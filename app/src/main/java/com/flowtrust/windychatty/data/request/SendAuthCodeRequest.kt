@@ -1,3 +1,3 @@
 package com.flowtrust.windychatty.data.request
 
-class SendAuthCodeRequest(val phone:String)
+data class SendAuthCodeRequest(val phone:String,val code:String)

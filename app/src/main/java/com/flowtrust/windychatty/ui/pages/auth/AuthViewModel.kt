@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flowtrust.windychatty.data.countryData.Country
+import com.flowtrust.windychatty.data.request.RequestRefreshToken
 import com.flowtrust.windychatty.domain.models.AuthRepository
 import com.flowtrust.windychatty.domain.models.CountyRepository
 import com.flowtrust.windychatty.domain.remote.model.ResultResponse
@@ -61,6 +62,30 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+   suspend fun skipAuth():Boolean{
+      val token = authRepository.getRefreshToken()
+       Log.d("fowkof",token.toString())
+       try {
+           val response = authRepository.refreshAccessToken(token?:"")
+           Log.d("fowkof",response.toString())
+           if (response is ResultResponse.Success) {
+               val tokenData = response.data!!
+                   Log.d("fowkof",tokenData.toString())
+                   authRepository.saveTokens(tokenData.access_token,tokenData.refresh_token)
+                   return true
+               } else {
+               Log.d("fowkof","all bad")
+                return false
+               }
+       } catch (e: Exception) {
+           Log.d("fowkof",e.toString())
+           return false
+       }
+
+
+
+    }
+
     fun onChangeCountry(country: Country) {
         _uiState.value = _uiState.value.copy(
             selectedCountry = country,
@@ -90,13 +115,14 @@ class AuthViewModel @Inject constructor(
     }
 
     // Отправка номера телефона
-    fun submitPhone() {
+    fun submitPhone(onSuccess:()->Unit) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = "")
             try {
                 val response = authRepository.sendPhoneNumber( "+${_uiState.value.code + _uiState.value.phone}")
                 if (response.isSuccessful) {
                     _uiState.value = _uiState.value.copy(isCodeSent = true)
+                    onSuccess.invoke()
                 } else {
                     _uiState.value = _uiState.value.copy(errorMessage = "Ошибка отправки кода")
                 }
@@ -107,34 +133,4 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
-
-    // Отправка кода подтверждения
-    fun submitCode() {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = "")
-
-            try {
-                val response = authRepository.verifyCode("+${_uiState.value.code + _uiState.value.phone}")
-                if (response.isSuccessful) {
-                    val authResponse = response.body()
-                    if (authResponse != null) {
-                        authRepository.saveTokens(authResponse.accessToken, authResponse.refreshToken)
-                        // Логика перехода на следующий экран (авторизация или регистрация)
-                    } else {
-                        _uiState.value = _uiState.value.copy(errorMessage = "Invalid response")
-                    }
-                } else {
-                    _uiState.value = _uiState.value.copy(errorMessage = "Invalid code")
-                }
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(errorMessage = "Error: ${e.message}")
-            } finally {
-                _uiState.value = _uiState.value.copy(isLoading = false)
-            }
-        }
-    }
-
-
-
-
 }

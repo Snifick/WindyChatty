@@ -1,12 +1,13 @@
 package com.flowtrust.windychatty.data.response
 data class AuthResponse(
-    val accessToken: String,
-    val refreshToken: String,
-    val userId: String,
-    val isUserExists: Boolean
+    val access_token: String,
+    val refresh_token: String,
+    val user_id: String,
+    val is_user_exists: Boolean
 )
 
 data class TokenResponse(
-    val accessToken: String,
-    val refreshToken: String
+    val access_token: String,
+    val refresh_token: String,
+    val user_id: String,
 )
