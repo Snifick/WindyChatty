@@ -38,6 +38,7 @@ fun CustomOutlinedTextField(
             focusedTextColor = MaterialTheme.colorScheme.primary
 
         ),
+        placeholder = {if(label=="Дата рождения:") Text(text = "XXXX-XX-XX", style = MaterialTheme.typography.bodyMedium)},
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)

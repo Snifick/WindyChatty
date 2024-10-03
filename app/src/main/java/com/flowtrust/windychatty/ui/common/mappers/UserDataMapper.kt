@@ -6,7 +6,7 @@ import com.flowtrust.windychatty.domain.models.ProfileData
 import com.flowtrust.windychatty.domain.models.UserData
 import com.flowtrust.windychatty.domain.models.UserDataToUpdate
 
-fun mapProfileDataToUserDataToUpdate(profileData: ProfileData, avatar: Avatar): UserDataToUpdate {
+fun mapProfileDataToUserDataToUpdate(profileData: ProfileData, avatar: Avatar):UserDataToUpdate {
     return UserDataToUpdate(
         avatar = avatar,
         birthday = profileData.birthday?:"",

@@ -190,11 +190,17 @@ fun ProfileScreen(
                 onClick = {
                     val avatarBase64 = selectedImageUri?.let { encodeUriToBase64(context,it) } ?: userData.profile_data.avatar
                     val avatar = Avatar(avatarBase64, selectedImageUri?.authority ?: "avatar")  // Пример с новым аватаром
+
+                    fun isValidDate(date: String): Boolean {
+                        val regex = """\d{4}-\d{2}-\d{2}""".toRegex()
+                        return regex.matches(date)
+                    }
+
                     // Сохранение данных
                     val profileData = userData.profile_data.copy(
                         city = cityState.value,
                         status = statusState.value,
-                        birthday = birthdayState.value,
+                        birthday = if(isValidDate(birthdayState.value)) birthdayState.value else userData.profile_data.birthday ,
                         name = nameState.value,
                         vk = vkState.value,
                         instagram = instagramState.value,

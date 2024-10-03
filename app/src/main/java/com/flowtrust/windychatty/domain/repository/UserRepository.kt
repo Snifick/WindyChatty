@@ -84,6 +84,8 @@ class UserRepository @Inject constructor(
                         validToken = resp.data.access_token
                         authRepository.saveTokens(validToken, resp.data.refresh_token)
                     }
+                    else
+                        return false
                 }
                 val response = userApi.updateUserData("Bearer $validToken", userData)
                 if (response.isSuccessful) {

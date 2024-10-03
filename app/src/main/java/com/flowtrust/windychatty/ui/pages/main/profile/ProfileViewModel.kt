@@ -30,10 +30,8 @@ class ProfileViewModel @Inject constructor(
 
     private fun fetchUserProfile() {
         viewModelScope.launch {
-
             val accessToken = authRepository.getAccessToken()?:""
             val result = userRepository.getUserProfile(accessToken)
-
             if(result is ResultResponse.Success){
                 _uiState.value = ProfileUiState.Success(result.data!!)
             }
@@ -46,10 +44,13 @@ class ProfileViewModel @Inject constructor(
     fun updateData(userData: UserData,avatar: Avatar){
         viewModelScope.launch {
             val accessToken = authRepository.getAccessToken()?:""
-            _uiState.value = (_uiState.value as ProfileUiState.Success).copy(userData = userData)
+            _uiState.value =  ProfileUiState.Loading
             if(userRepository.updateUserData(accessToken,mapProfileDataToUserDataToUpdate(userData.profile_data,avatar))){
                 userRepository.saveUserDataToPreferences(userData)
-                Log.d("mfowkof",userData.profile_data.avatar?:"")
+                _uiState.value = ProfileUiState.Success(userData)
+            }
+            else{
+                _uiState.value =  ProfileUiState.Error("Ошибка при обновлении данных.")
             }
         }
 
