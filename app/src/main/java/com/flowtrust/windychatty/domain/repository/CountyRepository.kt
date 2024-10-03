@@ -1,4 +1,4 @@
-package com.flowtrust.windychatty.domain.models
+package com.flowtrust.windychatty.domain.repository
 
 import android.util.Log
 import com.flowtrust.windychatty.data.UserCountryInfoApi

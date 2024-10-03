@@ -3,6 +3,7 @@ package com.flowtrust.windychatty.data.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.flowtrust.windychatty.data.AuthApi
+import com.flowtrust.windychatty.data.UserApi
 import com.flowtrust.windychatty.data.UserCountryInfoApi
 import com.flowtrust.windychatty.data.countryData.CountryApi
 import com.flowtrust.windychatty.data.network.AddCookiesInterceptor
@@ -10,8 +11,9 @@ import com.flowtrust.windychatty.data.network.BaseRetrofit
 import com.flowtrust.windychatty.data.network.CountyRetrofit
 import com.flowtrust.windychatty.data.network.ReceivedCookiesInterceptor
 import com.flowtrust.windychatty.data.network.UserCountryRetrofit
-import com.flowtrust.windychatty.domain.models.AuthRepository
-import com.flowtrust.windychatty.domain.models.CountyRepository
+import com.flowtrust.windychatty.domain.repository.AuthRepository
+import com.flowtrust.windychatty.domain.repository.CountyRepository
+import com.flowtrust.windychatty.domain.repository.UserRepository
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -114,7 +116,11 @@ object DI {
     @Provides
     fun provideCountryRepository(api: CountryApi, userCountryInfoApi: UserCountryInfoApi): CountyRepository = CountyRepository(api,userCountryInfoApi)
 
+    @Provides
+    fun provideUserProfileApi(baseRetrofit: BaseRetrofit):UserApi = baseRetrofit.retrofit.create(UserApi::class.java)
 
+    @Provides
+    fun prodiveUserRepository(userApi: UserApi,sharedPreferences: SharedPreferences,authRepository: AuthRepository) = UserRepository(userApi,sharedPreferences, authRepository)
 
 
 }

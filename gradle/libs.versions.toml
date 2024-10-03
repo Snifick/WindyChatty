@@ -1,4 +1,5 @@
 [versions]
+accompanistSystemuicontroller = "0.31.1-alpha"
 agp = "8.4.2"
 coilSvg = "2.2.2"
 coilVersion = "2.7.0"
@@ -23,6 +24,7 @@ okhttp = "4.11.0"
 mediationTestSuite = "3.0.0"
 
 [libraries]
+accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 coil = { module = "io.coil-kt:coil", version.ref = "coilVersion" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilVersion" }

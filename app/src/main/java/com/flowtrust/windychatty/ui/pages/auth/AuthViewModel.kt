@@ -4,9 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flowtrust.windychatty.data.countryData.Country
-import com.flowtrust.windychatty.data.request.RequestRefreshToken
-import com.flowtrust.windychatty.domain.models.AuthRepository
-import com.flowtrust.windychatty.domain.models.CountyRepository
+import com.flowtrust.windychatty.domain.repository.AuthRepository
+import com.flowtrust.windychatty.domain.repository.CountyRepository
 import com.flowtrust.windychatty.domain.remote.model.ResultResponse
 import com.flowtrust.windychatty.ui.pages.auth.contry_picker.getPhoneMaskUsingLibphonenumber
 import dagger.hilt.android.lifecycle.HiltViewModel

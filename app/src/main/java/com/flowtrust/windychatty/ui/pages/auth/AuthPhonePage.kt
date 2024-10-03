@@ -50,18 +50,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
-fun AuthPage(viewModel: AuthViewModel = hiltViewModel(),
-             onNavigateToCode:()->Unit,
-             skipAuth:()->Unit) {
+fun AuthPage(
+    viewModel: AuthViewModel = hiltViewModel(),
+    onNavigateToCode: () -> Unit,
+    skipAuth: () -> Unit
+) {
+
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit){
-        withContext(Dispatchers.IO){
-            if(viewModel.skipAuth()){
-                withContext(Dispatchers.Main){
-                    skipAuth()
+    LaunchedEffect(Unit) {
+        withContext(Dispatchers.IO) {
+            if (viewModel.skipAuth()) {
+                withContext(Dispatchers.Main) {
+                    skipAuth()     // Если можем пропустить авторизацию, - пропускаем
                 }
             }
         }
@@ -75,30 +78,38 @@ fun AuthPage(viewModel: AuthViewModel = hiltViewModel(),
         verticalArrangement = Arrangement.Center
     ) {
 
-
-        Text(text = "Авторизация",
-            style = MaterialTheme.typography.titleLarge)
+        Text(
+            text = "Авторизация",
+            style = MaterialTheme.typography.titleLarge
+        )
         Spacer(modifier = Modifier.size(12.dp))
-        Text(text = "Пожалуйста, введите ваш номер телефона для авторизации либо регистрации",
+        Text(
+            text = "Пожалуйста, введите ваш номер телефона для авторизации либо регистрации",
             style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center)
+            textAlign = TextAlign.Center
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         OutlinedTextField(
-            value = uiState.selectedCountry?.name?:"",
+            value = uiState.selectedCountry?.name ?: "",
             onValueChange = { _ ->
             },
             label = { Text("Страна", style = MaterialTheme.typography.bodyMedium) },
             shape = RoundedCornerShape(8.dp),
-            trailingIcon = { Image(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "" )},
+            trailingIcon = {
+                Image(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = ""
+                )
+            },
             leadingIcon = {
                 Image(
                     painter = rememberAsyncImagePainter(
                         model = ImageRequest.Builder(context)
                             .data(uiState.imgLink)
                             .decoderFactory(SvgDecoder.Factory())
-                            .crossfade(800)
+                            .crossfade(500)
                             .build(),
                         contentScale = ContentScale.FillBounds
                     ),
@@ -190,10 +201,16 @@ fun AuthPage(viewModel: AuthViewModel = hiltViewModel(),
                     visualTransformation = PhoneVisualTransformation(
                         uiState.phoneMask,
                         MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-                        MaterialTheme.colorScheme.onBackground),
+                        MaterialTheme.colorScheme.onBackground
+                    ),
                     label = null,
-                    placeholder = { Text(uiState.phoneMask.drop(uiState.code.length+1), style = MaterialTheme.typography.bodyMedium) },
-                    modifier = Modifier.weight(3.1f),  // Телефон занимает больше пространства
+                    placeholder = {
+                        Text(
+                            uiState.phoneMask.drop(uiState.code.length + 1),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    },
+                    modifier = Modifier.weight(3.1f),  // Номер занимает больше пространства
                     singleLine = true,
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = Color.Transparent,
@@ -211,7 +228,7 @@ fun AuthPage(viewModel: AuthViewModel = hiltViewModel(),
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { viewModel.submitPhone(onSuccess = {onNavigateToCode.invoke()}) },
+            onClick = { viewModel.submitPhone(onSuccess = { onNavigateToCode.invoke() }) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
@@ -223,15 +240,17 @@ fun AuthPage(viewModel: AuthViewModel = hiltViewModel(),
 
         if (uiState.errorMessage.isNotEmpty()) {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = uiState.errorMessage, style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Center)
+            Text(
+                text = uiState.errorMessage, style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center
+            )
         }
     }
 
-    if(expanded) {
+    if (expanded) {
         CountryCodePicker(listCountry = uiState.listCountry) { country ->
-            if(country!=null)
-            viewModel.onChangeCountry(country)
+            if (country != null)
+                viewModel.onChangeCountry(country)
             expanded = false
         }
     }

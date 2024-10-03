@@ -55,6 +55,8 @@ android {
 dependencies {
 
 
+    implementation(libs.accompanist.systemuicontroller)
+
     implementation(libs.libphonenumber.v81241)
 
     implementation(libs.coil.svg)

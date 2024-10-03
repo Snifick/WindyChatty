@@ -24,4 +24,5 @@ interface AuthApi {
 
     @POST("/api/v1/users/register/")
     suspend fun register(@Body request:RegisterRequest ): Response<TokenResponse>
+
 }

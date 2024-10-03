@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -59,7 +60,8 @@ fun CountryCodePicker(
             Image(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад",
                 modifier = Modifier
                     .size(32.dp)
-                    .clickable { onBack(null) })
+                    .clickable { onBack(null) },
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground))
 
             Text(text = "Выберите страну",
                 style = MaterialTheme.typography.titleLarge)
